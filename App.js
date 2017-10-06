@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Alert, TouchableHighlight, TouchableOpacity, TouchableNativeFeedback, TouchableWithoutFeedback, Touchable, Touch} from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, TouchableHighlight, TouchableOpacity, TouchableNativeFeedback, TouchableWithoutFeedback, Touchable, Touch, Modal, Image} from 'react-native';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -14,6 +14,9 @@ export default class App extends React.Component {
       starting: false,
       gameTimer: 10,
       countdown: null,
+      startScreenVisible: true,
+      instructionsScreenVisible: false,
+
     };
   }
   startButtonPress = () => {
@@ -62,36 +65,77 @@ export default class App extends React.Component {
   blueRelease = () => {
     this.blueTapping = false;
   }
+
+  playButtonPress = () => {
+    this.setState({ startScreenVisible: false });
+    this.setState({ instructionsScreenVisible: false });
+  }
+  instructionsButtonPress = () => {
+    this.setState({ instructionsScreenVisible: true });
+    this.setState({ startScreenVisible: false });
+  }
   
   render() {
     return (
       <View style={ styles.container }>
-        <View
-          onTouchStart={ this.redTap }
-          onTouchEnd={ this.redRelease }
-          style={ styles.redSide }>
-          <View>
-            <Text style={ styles.redSideText }>Red Side</Text>
-            <Text style={ styles.redScoreStyles }> { this.state.redScore }</Text>
+        <Modal 
+          style={ styles.startScreen }
+          animationType="slide"
+          visible={ this.state.startScreenVisible }>
+          <Image 
+            source={ require('./tapwars.jpg') }
+            style={ {alignSelf: 'stretch', flex: 1, height: undefined, width: undefined} }
+            />
+          <TouchableHighlight
+            style={ styles.instructionsButton }
+            onPress={ this.instructionsButtonPress }>
+            <Text style={ styles.startScreenInstructionsText }>Instructions</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={ styles.playButton }
+            onPress={ this.playButtonPress }
+            underlayColor="lightblue">
+            <Text style={ styles.startScreenPlayText }>Play</Text>
+          </TouchableHighlight>
+        </Modal>
+        <Modal
+          style={ styles.instructionsScreen }
+          animationType="slide"
+          visible={ this.state.instructionsScreenVisible }>
+          <Text style={ styles.instructionsText }>After pressing the start button, tap on your side as fast as you can for 10 seconds. The side with the most taps wins!</Text>
+          <TouchableHighlight
+            style={ styles.playButton }
+            onPress={ this.playButtonPress }
+            underlayColor="lightblue">
+            <Text style={ styles.startScreenPlayText }>Play</Text>
+          </TouchableHighlight>
+        </Modal>
+          <View
+            onTouchStart={ this.redTap }
+            onTouchEnd={ this.redRelease }
+            style={ styles.redSide }>
+            <View>
+              <Text style={ styles.redSideText }>Red Side</Text>
+              <Text style={ styles.redScoreStyles }> { this.state.redScore }</Text>
+            </View>
           </View>
-        </View>
-        <TouchableHighlight
-          style={ styles.startButton }
-          onPress={ this.startButtonPress }
-          underlayColor="green">
-          <Text style={ styles.startButtonText }>
-            { this.state.startButtonTitle }
-          </Text>
-        </TouchableHighlight>
-        <View
-          onTouchStart={ this.blueTap }
-          onTouchEnd={ this.blueRelease }
-          style={ styles.blueSide }>
-          <View>
-            <Text style={ styles.blueSideText }>Blue Side</Text>
-            <Text style={ styles.blueScoreStyles }> { this.state.blueScore }</Text>
+          <TouchableHighlight
+            style={ styles.startButton }
+            onPress={ this.startButtonPress }
+            underlayColor="green">
+            <Text style={ styles.startButtonText }>
+              { this.state.startButtonTitle }
+            </Text>
+          </TouchableHighlight>
+          <View
+            onTouchStart={ this.blueTap }
+            onTouchEnd={ this.blueRelease }
+            style={ styles.blueSide }>
+            <View>
+              <Text style={ styles.blueSideText }>Blue Side</Text>
+              <Text style={ styles.blueScoreStyles }> { this.state.blueScore }</Text>
+            </View>
           </View>
-        </View>
       </View>
     );
   }
@@ -146,5 +190,54 @@ const styles = StyleSheet.create({
   blueScoreStyles: {
     color: 'purple',
     fontSize: 30,
+  },
+
+  startScreen: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  instructionsScreen: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  playButton: {
+    marginTop: 475,
+    marginLeft: '55%',
+    marginRight: '20%',
+    position: 'absolute',
+    backgroundColor: 'blue',
+    width: '25%',
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'lightblue',
+  },
+  instructionsButton: {
+    position: 'absolute',
+    marginTop: 475,
+    marginLeft: '20%',
+    marginRight: '55%',
+    backgroundColor: 'purple',
+    width: '25%',
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'pink',
+  },
+  instructionsText: {
+    marginTop: 250,
+    marginLeft: '10%',
+    marginRight: '10%',
+    
+  },
+  startScreenPlayText: {
+    color: 'white',
+  },
+  startScreenInstructionsText: {
+    color: 'white',
   },
 });
